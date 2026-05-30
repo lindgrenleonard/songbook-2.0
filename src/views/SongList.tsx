@@ -1,11 +1,18 @@
-import React from 'react';
 import { useMatch } from '@tanstack/react-location';
-import { useEffect, useState } from 'react';
+import Fuse from 'fuse.js';
+import React, { useEffect, useMemo, useState } from 'react';
 import SongListItem from '../components/SongListItem';
 import Spinner from '../components/Spinner';
 import { useSearch } from '../context/searchContext';
 import { useSongs } from '../context/songContext';
 import { Song } from '../definitions/songs';
+
+const normalize = (s: string) =>
+	s
+		.normalize('NFD')
+		.replace(/\p{Diacritic}/gu, '')
+		.replace(/[^\p{L}\p{N}]/gu, '')
+		.toLowerCase();
 
 export default function SongList(): React.ReactElement {
 	const { data, search: searchParams } = useMatch();
@@ -19,6 +26,16 @@ export default function SongList(): React.ReactElement {
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const isFilteredList = !!songIds;
+
+	const fuse = useMemo(() => {
+		if (!baseSongs) return null;
+		return new Fuse(baseSongs, {
+			keys: ['title'],
+			threshold: 0.4,
+			ignoreLocation: true,
+			getFn: (song) => normalize(song.title),
+		});
+	}, [baseSongs]);
 
 	useEffect(() => {
 		if (!songs) return;
@@ -36,20 +53,41 @@ export default function SongList(): React.ReactElement {
 	}, [songs, songCollection, songIds]);
 
 	useEffect(() => {
-		if (!search && !filter.length) return setDisplaySongs(baseSongs);
+		if (!baseSongs) return;
+		const normalizedSearch = normalize(search);
+		if (!normalizedSearch && !filter.length) return setDisplaySongs(baseSongs);
 
-		const normalizedSearch = search.normalize('NFD').toLowerCase();
-		const filteredSongs: Song[] = [];
-		baseSongs?.forEach((song) => {
-			if (filter.length && !filter.every((tag) => song.tags.includes(tag))) return;
-			if (song.title.normalize('NFD').toLowerCase().includes(normalizedSearch))
-				return filteredSongs.push(song);
-			if (song.content.normalize('NFD').toLowerCase().includes(normalizedSearch))
-				return filteredSongs.push(song);
-		});
+		const tagFiltered = filter.length
+			? baseSongs.filter((song) => filter.every((tag) => song.tags.includes(tag)))
+			: baseSongs;
 
-		setDisplaySongs(filteredSongs);
-	}, [baseSongs, search, filter]);
+		if (!normalizedSearch) return setDisplaySongs(tagFiltered);
+
+		const tagFilteredIds = new Set(tagFiltered.map((s) => s.id));
+
+		const titleSubstringHits = tagFiltered.filter((song) =>
+			normalize(song.title).includes(normalizedSearch),
+		);
+
+		const titleFuzzyHits = (fuse?.search(normalizedSearch) ?? [])
+			.map((result) => result.item)
+			.filter((song) => tagFilteredIds.has(song.id));
+
+		const contentHits = tagFiltered.filter((song) =>
+			normalize(song.content).includes(normalizedSearch),
+		);
+
+		const seen = new Set<number>();
+		const merged: Song[] = [];
+		for (const song of [...titleSubstringHits, ...titleFuzzyHits, ...contentHits]) {
+			if (!seen.has(song.id)) {
+				seen.add(song.id);
+				merged.push(song);
+			}
+		}
+
+		setDisplaySongs(merged);
+	}, [baseSongs, fuse, search, filter]);
 
 	useEffect(() => {
 		setLoading(loadingSongs || !songs || !baseSongs || !displaySongs);

@@ -16,6 +16,7 @@
 		"@tanstack/react-location": "^3.7.4",
 		"abcjs": "^6.6.3",
 		"axios": "^1.13.2",
+		"fuse.js": "^7.3.0",
 		"nanoid": "^5.1.6",
 		"react": "^19.2.3",
 		"react-dom": "^19.2.3",
