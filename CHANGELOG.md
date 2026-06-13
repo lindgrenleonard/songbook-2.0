@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-06-13
+
+### Added
+
+- Melody player to play a song's melody from ABC notation
 - BookmarksList view
 
 ## [0.4.0] - 2025-12-17

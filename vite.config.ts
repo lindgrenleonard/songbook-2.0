@@ -49,7 +49,7 @@ export default defineConfig({
 							'https://raw.githubusercontent.com/itsektionen/songlist/master/dist/songs.json',
 					}),
 				],
-				globPatterns: ['**/*.{js,css,html}', '*', 'assets/*'],
+				globPatterns: ['**/*.{js,css,html}', '*', 'assets/*', 'soundfonts/**/*.mp3'],
 			},
 		}),
 	],

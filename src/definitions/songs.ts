@@ -6,6 +6,7 @@ export type Song = {
 	author?: string;
 	melody?: string;
 	composer?: string;
+	abc?: string;
 	tags: Tag[];
 	notes?: string[];
 	sorting?: number;
