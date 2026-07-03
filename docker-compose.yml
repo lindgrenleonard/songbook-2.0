@@ -1,0 +1,25 @@
+# Self-hosted songbook + songlist for the DXP2800.
+# Cloudflare tunnel forwards 7e.lindgren.dev -> localhost:8091 -> nginx, which
+# serves the songbook SPA and proxies /songs.json + /songs.xml to the songlist.
+#
+# Copy this file AND nginx.conf to the DXP, then:
+#   docker compose pull && docker compose up -d
+services:
+  songlist:
+    image: lindgrenleonard/songlist:latest
+    restart: unless-stopped
+
+  songbook:
+    image: lindgrenleonard/songbook:latest
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - '8091:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - songbook
+      - songlist

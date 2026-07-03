@@ -71,7 +71,7 @@ export default function Navbar(): React.ReactElement {
 								<Left />
 							</button>
 						)}
-						<h1>Songbook</h1>
+						<h1>Sågarstugan</h1>
 					</div>
 					<div className="flex-row">
 						<button aria-label="Filter songs" onClick={() => setFilterOpen(true)}>

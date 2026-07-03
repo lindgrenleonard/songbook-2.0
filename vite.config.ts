@@ -24,10 +24,10 @@ export default defineConfig({
 		VitePWA({
 			registerType: 'autoUpdate',
 			manifest: {
-				name: 'IT-Songbook',
-				short_name: 'Songbook',
-				description: 'The IT-Chapters Webapp Songbook 2.0',
-				theme_color: '#403050',
+				name: 'Sågarstugan',
+				short_name: 'Sågarstugan',
+				description: 'Sågarstugan songbook',
+				theme_color: '#7B241C',
 				icons: [
 					{
 						src: 'icon-md.png',
@@ -45,8 +45,7 @@ export default defineConfig({
 				runtimeCaching: [
 					getCache({
 						name: 'songs.json',
-						pattern:
-							'https://raw.githubusercontent.com/itsektionen/songlist/master/dist/songs.json',
+						pattern: /\/songs\.json(\?.*)?$/,
 					}),
 				],
 				globPatterns: ['**/*.{js,css,html}', '*', 'assets/*', 'soundfonts/**/*.mp3'],

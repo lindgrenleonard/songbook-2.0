@@ -21,5 +21,4 @@ export type SongsWithMeta = {
 	updatedAt: string;
 };
 
-export const SONGS_JSON_URL =
-	'https://raw.githubusercontent.com/itsektionen/songlist/master/dist/songs.json';
+export const SONGS_JSON_URL = 'https://7e.lindgren.dev/songs.json';

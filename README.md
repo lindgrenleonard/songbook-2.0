@@ -1,6 +1,6 @@
-# The IT-Chapters Webapp Songbook 2.0
+# Sågarstugan Songbook
 
-The chapters new and improved songbook (PWA) webapp!
+Sågarstugan's songbook (PWA) webapp!
 
 This project is built with [Vite](https://vitest.dev) as a [React](https://reactjs.org) + [TypeScript](https://www.typescriptlang.org) web-app using [Yarn Classic](https://classic.yarnpkg.com/) as the package manager.
 
@@ -68,4 +68,12 @@ Keep the history [simple and clean](https://www.youtube.com/watch?v=B1nDzB1P8GM)
 
 ## Deployment
 
-Deployment is automatically managed by GitHub workflows.
+Self-hosted with Docker Compose. The images (`songbook` and `songlist`) are built
+and pushed manually with the Docker CLI, then pulled on the host:
+
+```sh
+docker compose pull && docker compose up -d
+```
+
+`nginx` fronts both services on port 8091 and proxies `/songs.json` to the songlist.
+See `docker-compose.yml` and `nginx.conf`.
