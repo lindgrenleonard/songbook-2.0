@@ -11,9 +11,29 @@ type Player = {
 	duration: number;
 };
 
+let audioContext: AudioContext | null = null;
+
+function getAudioContext(): AudioContext | null {
+	if (!audioContext) {
+		const Context =
+			window.AudioContext ??
+			(window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+		if (Context) audioContext = new Context();
+	}
+	return audioContext;
+}
+
+// iOS only unlocks audio when the context is created or resumed synchronously
+// within a user gesture, so this must run before any await in the tap handler.
+function unlockAudioContext(): void {
+	void getAudioContext()?.resume();
+}
+
 async function createPlayer(abc: string): Promise<Player> {
 	const abcjs = (await import('abcjs')).default;
 
+	const ac = getAudioContext();
+	if (ac) abcjs.synth.registerAudioContext(ac);
 	if (!abcjs.synth.supportsAudio()) {
 		throw new Error('Audio playback is not supported in this browser.');
 	}
@@ -24,6 +44,7 @@ async function createPlayer(abc: string): Promise<Player> {
 	const synth = new abcjs.synth.CreateSynth();
 	await synth.init({
 		visualObj,
+		audioContext: ac ?? undefined,
 		options: {
 			soundFontUrl: '/soundfonts/',
 			soundFontVolumeMultiplier: 3.0,
@@ -108,6 +129,7 @@ export default function MelodyPlayer({ abc }: { abc: string }): React.ReactEleme
 	}
 
 	async function play() {
+		unlockAudioContext();
 		setState('loading');
 		try {
 			const player = await loadPlayer();
