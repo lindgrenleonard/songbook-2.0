@@ -2,6 +2,7 @@ import React from 'react';
 import { Tag, TAG_NAMES } from '../definitions/tag';
 
 const tagColors: Record<Tag, { foreground: string; background: string; border?: string }> = {
+	sagarstugan: { foreground: '#ffffff', background: '#801818' },
 	gasque: { foreground: '#403050', background: '#cc99ff' },
 	beer: { foreground: '#432101', background: '#D97a19' },
 	wine: { foreground: '#49040c', background: '#ff3d4d' },

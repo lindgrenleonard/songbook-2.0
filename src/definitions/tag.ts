@@ -1,3 +1,4 @@
+export const SAGARSTUGAN = 'sagarstugan';
 export const GASUQUE = 'gasque';
 export const BEER = 'beer';
 export const WINE = 'wine';
@@ -12,6 +13,7 @@ export const SWE = 'swe';
 export const ENG = 'eng';
 
 export const TAGS = <const>[
+	SAGARSTUGAN,
 	GASUQUE,
 	BEER,
 	WINE,
@@ -28,6 +30,7 @@ export const TAGS = <const>[
 export type Tag = (typeof TAGS)[number];
 
 export const TAG_NAMES = {
+	[SAGARSTUGAN]: 'Sågarstugan',
 	[GASUQUE]: 'Gasque',
 	[BEER]: 'Beer',
 	[WINE]: 'Wine',
