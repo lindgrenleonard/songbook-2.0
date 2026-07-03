@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-location';
 import React from 'react';
 import { Song } from '../definitions/songs';
+import TrebleClef from '../icons/TrebleClef';
 import TagBadge from './TagBadge';
 
 type SongItemProps = {
@@ -21,12 +22,15 @@ export default function SongItem({ song, from }: SongItemProps): React.ReactElem
 							))}
 						</div>
 					</div>
-					<p>
-						{song.content
-							.split('\n\n')
-							.filter((paragraph) => !paragraph.startsWith('> ') && !paragraph.startsWith('# '))
-							.join('\n')}
-					</p>
+					<div className="preview flex-row items-center gap-md">
+						{song.abc && <TrebleClef size="sm" className="melody-badge" />}
+						<p>
+							{song.content
+								.split('\n\n')
+								.filter((paragraph) => !paragraph.startsWith('> ') && !paragraph.startsWith('# '))
+								.join('\n')}
+						</p>
+					</div>
 				</div>
 			</li>
 		</Link>

@@ -21,13 +21,36 @@
 			line-height: 1.2;
 		}
 
-		p {
-			margin: 0.2rem 0 0 0;
-			font-size: 0.875rem;
-			color: rgba(var(--foreground), 0.6);
-			white-space: nowrap;
-			overflow-x: hidden;
-			text-overflow: ellipsis;
+		.preview {
+			margin-top: 0.2rem;
+			color: rgba(var(--foreground), 0.75);
+
+			.melody-badge {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				flex-shrink: 0;
+				width: 1.4rem;
+				height: 1.4rem;
+				border-radius: 50%;
+
+				color: rgb(var(--primary-dark));
+				background-color: rgb(var(--primary));
+				border: 0.1rem solid currentColor;
+
+				svg path {
+					stroke-width: 90;
+				}
+			}
+
+			p {
+				margin: 0 0.5rem 0 0;
+				min-width: 0;
+				font-size: 0.875rem;
+				white-space: nowrap;
+				overflow-x: hidden;
+				text-overflow: ellipsis;
+			}
 		}
 	}
 
