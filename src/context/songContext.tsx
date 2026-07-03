@@ -3,6 +3,7 @@ import axios from 'axios';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Song, SongCollection, SongsWithMeta, SONGS_JSON_URL } from '../definitions/songs';
+import { TAGS } from '../definitions/tag';
 
 const SongContext = createContext<{
 	songs?: Song[];
@@ -29,8 +30,9 @@ export function SongProvider({ children }: { children: ReactNode }): React.React
 		axios
 			.get<SongsWithMeta>(SONGS_JSON_URL)
 			.then(({ data }) => {
-				setSongs(data.songs);
-				setSongCollection(generateSongCollection(data.songs));
+				const songs = sanitizeSongs(data.songs);
+				setSongs(songs);
+				setSongCollection(generateSongCollection(songs));
 				if (window.navigator.onLine === false)
 					toast.warn("You're offline! Using last known songlist");
 			})
@@ -45,6 +47,16 @@ export function SongProvider({ children }: { children: ReactNode }): React.React
 			{children}
 		</SongContext.Provider>
 	);
+}
+
+// The song data is maintained separately from the app, so it can contain tags
+// this build doesn't know yet — drop those instead of crashing the tag badges.
+function sanitizeSongs(songs: Song[]): Song[] {
+	const knownTags = new Set<string>(TAGS);
+	return songs.map((song) => ({
+		...song,
+		tags: song.tags.filter((tag) => knownTags.has(tag)),
+	}));
 }
 
 function generateSongCollection(songs?: Song[]): SongCollection | undefined {
